@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Login - KisanMitra (किसान मित्र) | Select Farmer or Buyer</title>
+    
+    <meta name="theme-color" content="#1b4332">
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌾</text></svg>">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Yatra+One&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN with custom config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        kisan: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            950: '#052e16',
+                            leaf: '#2d6a4f',
+                            deep: '#1b4332',
+                            gold: '#d4a373',
+                            harvest: '#e9c46a',
+                            soil: '#582f0e',
+                            mint: '#d8f3dc'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        hindi: ['"Yatra One"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="bg-[#f5faf6] text-slate-800 font-sans min-h-screen flex flex-col justify-between selection:bg-kisan-500 selection:text-white antialiased">
+
+    <!-- Top Navigation Bar -->
+    <header class="bg-white/90 backdrop-blur-md border-b border-kisan-200 py-3.5 px-4 sm:px-8 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <!-- Brand Logo -->
+            <a href="/" class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-kisan-600 to-kisan-900 flex items-center justify-center text-white shadow-md shadow-kisan-900/20 ring-2 ring-kisan-300">
+                    <span class="text-xl">🌾</span>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl font-extrabold text-kisan-900 tracking-tight">Kisan<span class="text-kisan-600">Mitra</span></span>
+                        <span class="bg-kisan-100 text-kisan-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-kisan-300">किसान मित्र</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Right Options: Back to Market & Language -->
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-1 bg-kisan-900/80 px-2.5 py-1.5 rounded-xl border border-kisan-700/60 text-xs text-white">
+                    <i data-lucide="globe" class="w-3.5 h-3.5 text-kisan-400"></i>
+                    <select id="loginLanguageSelect" onchange="changeLoginLanguage(this.value)" class="bg-transparent text-white outline-none cursor-pointer text-xs font-semibold">
+                        <option value="en" class="text-gray-900" selected>English</option>
+                        <option value="hi" class="text-gray-900">हिन्दी (Hindi)</option>
+                        <option value="pa" class="text-gray-900">ਪੰਜਾਬੀ (Punjabi)</option>
+                        <option value="mr" class="text-gray-900">मराठी (Marathi)</option>
+                        <option value="te" class="text-gray-900">తెలుగు (Telugu)</option>
+                        <option value="ur" class="text-gray-900">اردو (Urdu)</option>
+                        <option value="ta" class="text-gray-900">தமிழ் (Tamil)</option>
+                        <option value="bn" class="text-gray-900">বাংলা (Bengali)</option>
+                        <option value="ja" class="text-gray-900">日本語 (Japanese)</option>
+                        <option value="de" class="text-gray-900">Deutsch (German)</option>
+                        <option value="fr" class="text-gray-900">Français (French)</option>
+                        <option value="zh" class="text-gray-900">中文 (Chinese)</option>
+                        <option value="ko" class="text-gray-900">한국어 (Korean)</option>
+                    </select>
+                </div>
+                <a href="/" class="text-xs font-bold text-kisan-800 hover:text-kisan-950 bg-kisan-50 hover:bg-kisan-100 border border-kisan-200 px-3.5 py-1.5 rounded-xl transition flex items-center gap-1.5">
+                    <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+                    <span>Browse Marketplace</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content: Dual Role Login Decision Hub -->
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 w-full flex-grow flex flex-col justify-center">
+
+        <!-- Title Section -->
+        <div class="text-center max-w-2xl mx-auto space-y-3 mb-8 sm:mb-10">
+            <div class="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-100 via-kisan-100 to-amber-100 text-kisan-900 border border-kisan-300 px-4 py-1.5 rounded-full text-xs font-bold shadow-sm">
+                <span class="animate-pulse">🌱</span>
+                <span>Select Your Account Type (अपना खाता प्रकार चुनें)</span>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-kisan-950 tracking-tight leading-tight">
+                Welcome to <span class="text-kisan-600 underline decoration-amber-400 decoration-wavy decoration-2">KisanMitra</span>
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-600">
+                Please decide how you would like to sign in today. Select <strong>Farmer</strong> if you cultivate and sell crops, or <strong>Buyer</strong> if you purchase farm produce directly.
+            </p>
+        </div>
+
+        <!-- Decision Cards: Farmer vs Buyer -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto w-full">
+
+            <!-- ============================================== -->
+            <!-- CARD 1: FARMER / KISAN LOGIN (किसान भाई)      -->
+            <!-- ============================================== -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border-2 border-kisan-400 shadow-xl shadow-kisan-900/5 hover:border-kisan-600 transition flex flex-col justify-between relative overflow-hidden group">
+                <div class="absolute -right-8 -bottom-8 opacity-10 text-9xl pointer-events-none group-hover:scale-110 transition duration-500">
+                    🚜
+                </div>
+
+                <div class="space-y-4 relative z-10">
+                    <!-- Top Tag & Icon -->
+                    <div class="flex items-center justify-between">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-kisan-600 to-kisan-900 text-white flex items-center justify-center text-2xl shadow-md ring-4 ring-kisan-100">
+                            🚜
+                        </div>
+                        <span class="bg-kisan-100 text-kisan-900 text-xs font-extrabold px-3 py-1 rounded-full border border-kisan-300">
+                            Farmer Portal (किसान)
+                        </span>
+                    </div>
+
+                    <!-- Header -->
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">I am a Farmer / Kisan</h2>
+                        <p class="text-xs font-semibold text-kisan-700">मैं किसान हूँ (फसल उत्पादक)</p>
+                    </div>
+
+                    <!-- Benefits List -->
+                    <ul class="space-y-2 text-xs text-slate-600 pt-1">
+                        <li class="flex items-center gap-2">
+                            <span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[10px]">✓</span>
+                            <span>Sell harvest directly at <strong>0% brokerage</strong></span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[10px]">✓</span>
+                            <span>Check <strong>PM-Kisan & 90% Solar Subsidies</strong></span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[10px]">✓</span>
+                            <span>Direct WhatsApp connection with genuine buyers</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[10px]">✓</span>
+                            <span>Live APMC Mandi rates & ICAR weather advisory</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="space-y-2.5 pt-6 relative z-10">
+                    <!-- 1-Click Quick Demo Login Button -->
+                    <button onclick="quickLoginRole('farmer')" class="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-kisan-700 to-kisan-900 hover:from-kisan-800 hover:to-kisan-950 text-white font-bold text-xs sm:text-sm shadow-lg shadow-kisan-900/20 transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                        <span>🚜</span>
+                        <span>1-Click Login as Farmer (Ramesh Yadav)</span>
+                    </button>
+
+                    <!-- Manual Login / Password toggle -->
+                    <button onclick="openManualLogin('farmer')" class="w-full py-2.5 px-4 rounded-2xl bg-kisan-50 hover:bg-kisan-100 text-kisan-900 font-bold text-xs border border-kisan-200 transition flex items-center justify-center gap-1.5">
+                        <i data-lucide="key-round" class="w-3.5 h-3.5"></i>
+                        <span>Enter Farmer Mobile & Password</span>
+                    </button>
+                </div>
+            </div>
+
+
+            <!-- ============================================== -->
+            <!-- CARD 2: BUYER / CONSUMER LOGIN (खरीदार / उपभोक्ता) -->
+            <!-- ============================================== -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border-2 border-emerald-400 shadow-xl shadow-emerald-900/5 hover:border-emerald-600 transition flex flex-col justify-between relative overflow-hidden group">
+                <div class="absolute -right-8 -bottom-8 opacity-10 text-9xl pointer-events-none group-hover:scale-110 transition duration-500">
+                    🛒
+                </div>
+
+                <div class="space-y-4 relative z-10">
+                    <!-- Top Tag & Icon -->
+                    <div class="flex items-center justify-between">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-900 text-white flex items-center justify-center text-2xl shadow-md ring-4 ring-emerald-100">
+                            🛒
+                        </div>
+                        <span class="bg-emerald-100 text-emerald-900 text-xs font-extrabold px-3 py-1 rounded-full border border-emerald-300">
+                            Buyer Portal (खरीदार)
+                        </span>
+                    </div>
+
+                    <!-- Header -->
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">I am a Buyer / Consumer</h2>
+                        <p class="text-xs font-semibold text-emerald-700">मैं खरीदार / व्यापारी हूँ</p>
+                    </div>
+
+                    <!-- Benefits List -->
+                    <ul class="space-y-2 text-xs text-slate-600 pt-1">
+                        <li class="flex items-center gap-2">
+                            <span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[10px]">✓</span>
+                            <span>Direct farm gate procurement with <strong>zero markup</strong></span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[10px]">✓</span>
+                            <span>100% verified authentic & <strong>organic crops</strong></span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[10px]">✓</span>
+                            <span>In-app price negotiation & custom harvest orders</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-[10px]">✓</span>
+                            <span>Direct connect with farmers via WhatsApp & phone</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="space-y-2.5 pt-6 relative z-10">
+                    <!-- 1-Click Quick Demo Login Button -->
+                    <button onclick="quickLoginRole('buyer')" class="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-800 hover:from-emerald-700 hover:to-teal-900 text-white font-bold text-xs sm:text-sm shadow-lg shadow-emerald-900/20 transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                        <span>🛒</span>
+                        <span>1-Click Login as Buyer (Priya Sharma)</span>
+                    </button>
+
+                    <!-- Manual Login / Password toggle -->
+                    <button onclick="openManualLogin('buyer')" class="w-full py-2.5 px-4 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-emerald-900 font-bold text-xs border border-emerald-200 transition flex items-center justify-center gap-1.5">
+                        <i data-lucide="key-round" class="w-3.5 h-3.5"></i>
+                        <span>Enter Buyer Email / Phone & Password</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- New User Registration Banner -->
+        <div class="mt-10 max-w-xl mx-auto bg-gradient-to-r from-kisan-50 via-white to-emerald-50 rounded-2xl p-4 sm:p-5 border border-kisan-200 text-center space-y-2 shadow-sm">
+            <p class="text-xs font-bold text-slate-700">New to KisanMitra? Create your free account in 30 seconds</p>
+            <div class="flex justify-center gap-3">
+                <button onclick="openRegisterDialog('farmer')" class="px-4 py-2 bg-kisan-700 hover:bg-kisan-800 text-white text-xs font-bold rounded-xl shadow-sm transition">
+                    + Register as Farmer (किसान)
+                </button>
+                <button onclick="openRegisterDialog('buyer')" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow-sm transition">
+                    + Register as Buyer (खरीदार)
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+
+    <!-- ============================================== -->
+    <!-- MODAL 1: MANUAL CREDENTIALS LOGIN MODAL        -->
+    <!-- ============================================== -->
+    <div id="manualLoginModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-kisan-200 p-6 sm:p-8 space-y-5 animate-in zoom-in-95">
+            <div class="flex justify-between items-start border-b border-gray-100 pb-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-kisan-100 text-kisan-900 flex items-center justify-center text-xl font-bold" id="loginModalIcon">
+                        🚜
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-extrabold text-slate-900" id="loginModalTitle">Farmer Login</h3>
+                        <p class="text-xs text-slate-500" id="loginModalSub">Enter your mobile number & password</p>
+                    </div>
+                </div>
+                <button onclick="closeManualLogin()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-slate-500">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <form id="credentialLoginForm" onsubmit="submitCredentialLogin(event)" class="space-y-4 text-xs">
+                <input type="hidden" id="login_selected_role" value="farmer">
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1" id="loginIdentityLabel">Mobile Number or Email *</label>
+                    <input type="text" id="login_email_or_phone" required placeholder="farmer@kisanmitra.in or +91 98765 43210" class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none text-xs">
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block font-bold text-slate-700">Password *</label>
+                        <span class="text-[11px] text-kisan-700 font-semibold cursor-pointer" onclick="fillDemoCredentials()">Use Demo Pass (farmer123)</span>
+                    </div>
+                    <input type="password" id="login_password" required placeholder="Enter password" class="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none text-xs">
+                </div>
+
+                <div class="pt-2 space-y-2">
+                    <button type="submit" class="w-full py-3 rounded-xl bg-kisan-700 hover:bg-kisan-800 text-white font-bold text-xs shadow-md transition">
+                        Sign In to Account
+                    </button>
+                    <button type="button" onclick="quickLoginRole(document.getElementById('login_selected_role').value)" class="w-full py-2.5 rounded-xl bg-kisan-50 hover:bg-kisan-100 text-kisan-900 font-bold text-xs border border-kisan-200 transition">
+                        ⚡ Quick 1-Click Demo Login
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- ============================================== -->
+    <!-- MODAL 2: REGISTRATION MODAL                   -->
+    <!-- ============================================== -->
+    <div id="registerModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-kisan-200 p-6 sm:p-8 space-y-4 animate-in zoom-in-95">
+            <div class="flex justify-between items-start border-b border-gray-100 pb-3">
+                <div>
+                    <h3 class="text-lg font-extrabold text-slate-900" id="regModalTitle">Create KisanMitra Account</h3>
+                    <p class="text-xs text-slate-500">Join the direct agriculture platform</p>
+                </div>
+                <button onclick="closeRegisterDialog()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-slate-500">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <form id="registerForm" onsubmit="submitRegistration(event)" class="space-y-3.5 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Account Persona (भूमिका) *</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label id="roleOptionFarmer" class="flex items-center gap-2 p-2.5 rounded-xl border-2 border-kisan-500 bg-kisan-50 cursor-pointer font-bold text-kisan-900">
+                            <input type="radio" name="reg_role" value="farmer" checked onchange="toggleRegRoleUI('farmer')" class="text-kisan-600">
+                            <span>🚜 Farmer (किसान)</span>
+                        </label>
+                        <label id="roleOptionBuyer" class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer font-bold text-slate-700">
+                            <input type="radio" name="reg_role" value="buyer" onchange="toggleRegRoleUI('buyer')" class="text-kisan-600">
+                            <span>🛒 Buyer (खरीदार)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Full Name (पूरा नाम) *</label>
+                    <input type="text" id="reg_name" required placeholder="e.g. Sardar Gurpreet Singh" class="w-full p-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Mobile Number (फोन नंबर) *</label>
+                    <input type="tel" id="reg_phone" required placeholder="e.g. +91 98123 45678" class="w-full p-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Email or Username *</label>
+                    <input type="text" id="reg_email" required placeholder="e.g. gurpreet@kisanmitra.in" class="w-full p-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">State (राज्य)</label>
+                        <input type="text" id="reg_state" placeholder="Punjab" class="w-full p-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">District / City</label>
+                        <input type="text" id="reg_district" placeholder="Ludhiana" class="w-full p-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none">
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-3 rounded-xl bg-kisan-700 hover:bg-kisan-800 text-white font-bold shadow-md transition">
+                        Register & Enter Dashboard
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-kisan-950 text-kisan-200 py-6 border-t border-kisan-800 text-center text-xs">
+        <div class="max-w-4xl mx-auto px-4 space-y-1">
+            <p>🌾 <strong>KisanMitra</strong> • Direct Farmer-to-Consumer Agricultural Initiative</p>
+            <p class="text-kisan-400">100% Zero Brokerage Commission • Verified Government Scheme Assistance</p>
+        </div>
+    </footer>
+
+    <!-- Scripts for Login Page -->
+    <script>
+        if (window.lucide) lucide.createIcons();
+
+        const loginTranslations = {
+            en: {
+                title: "Welcome to KisanMitra",
+                sub: "Please decide how you would like to sign in today. Select Farmer if you cultivate and sell crops, or Buyer if you purchase farm produce directly.",
+                farmerTitle: "I am a Farmer / Kisan",
+                farmerSub: "I grow and produce crops",
+                farmerBtn: "1-Click Login as Farmer (Ramesh Yadav)",
+                farmerManual: "Enter Farmer Mobile & Password",
+                buyerTitle: "I am a Buyer / Consumer",
+                buyerSub: "I purchase fresh crops and produce",
+                buyerBtn: "1-Click Login as Buyer (Priya Sharma)",
+                buyerManual: "Enter Buyer Email / Phone & Password",
+                regFarmer: "+ Register as Farmer (किसान)",
+                regBuyer: "+ Register as Buyer (खरीदार)"
+            },
+            hi: {
+                title: "किसान मित्र (KisanMitra) में आपका स्वागत है",
+                sub: "कृपया चुनें कि आप आज कैसे लॉगिन करना चाहते हैं। फसल उत्पादक किसान के रूप में या सीधे खरीदार/उपभोक्ता के रूप में।",
+                farmerTitle: "मैं किसान हूँ (फसल उत्पादक)",
+                farmerSub: "फसल बेचें, सरकारी सब्सिडी पाएं, मंडी भाव देखें",
+                farmerBtn: "1-क्लिक किसान लॉगिन (रमेश यादव)",
+                farmerManual: "किसान मोबाइल नंबर और पासवर्ड दर्ज करें",
+                buyerTitle: "मैं खरीदार / उपभोक्ता हूँ",
+                buyerSub: "सीधे खेत से ताज़ा उत्पाद खरीदें, 0% दलाली",
+                buyerBtn: "1-क्लिक खरीदार लॉगिन (प्रिया शर्मा)",
+                buyerManual: "खरीदार ईमेल/फोन और पासवर्ड दर्ज करें",
+                regFarmer: "+ किसान के रूप में पंजीकरण करें",
+                regBuyer: "+ खरीदार के रूप में पंजीकरण करें"
+            },
+            pa: {
+                title: "ਕਿਸਾਨ ਮਿੱਤਰ (KisanMitra) ਵਿੱਚ ਜੀ ਆਇਆਂ ਨੂੰ",
+                sub: "ਕਿਰਪਾ ਕਰਕੇ ਚੁਣੋ ਕਿ ਤੁਸੀਂ ਕਿਵੇਂ ਲੌਗਇਨ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ। ਕਿਸਾਨ ਵਜੋਂ ਜਾਂ ਖਰੀਦਦਾਰ ਵਜੋਂ।",
+                farmerTitle: "ਮੈਂ ਕਿਸਾਨ ਹਾਂ (ਫਸਲ ਉਤਪਾਦਕ)",
+                farmerSub: "0% ਦਲਾਲੀ 'ਤੇ ਫਸਲ ਵੇਚੋ, ਸਰਕਾਰੀ ਸਬਸਿਡੀਆਂ ਲੱਭੋ",
+                farmerBtn: "1-ਕਲਿੱਕ ਕਿਸਾਨ ਲੌਗਇਨ (ਗੁਰਪ੍ਰੀਤ ਸਿੰਘ)",
+                farmerManual: "ਕਿਸਾਨ ਮੋਬਾਈਲ ਅਤੇ ਪਾਸਵਰਡ ਦਰਜ ਕਰੋ",
+                buyerTitle: "ਮੈਂ ਖਰੀਦਦਾਰ / ਖਪਤਕਾਰ ਹਾਂ",
+                buyerSub: "ਸਿੱਧਾ ਖੇਤ ਵਿੱਚੋਂ ਤਾਜ਼ੀ ਫਸਲ ਖਰੀਦੋ",
+                buyerBtn: "1-ਕਲਿੱਕ ਖਰੀਦਦਾਰ ਲੌਗਇਨ (ਪ੍ਰਿਆ ਸ਼ਰਮਾ)",
+                buyerManual: "ਖਰੀਦਦਾਰ ਈਮੇਲ/ਫੋਨ ਅਤੇ ਪਾਸਵਰਡ ਦਰਜ ਕਰੋ",
+                regFarmer: "+ ਕਿਸਾਨ ਵਜੋਂ ਰਜਿਸਟਰ ਕਰੋ",
+                regBuyer: "+ ਖਰੀਦਦਾਰ ਵਜੋਂ ਰਜਿਸਟਰ ਕਰੋ"
+            },
+            mr: {
+                title: "किसान मित्र (KisanMitra) मध्ये आपले स्वागत आहे",
+                sub: "कृपया आपण कसे लॉगिन करू इच्छिता ते निवडा. शेतकरी म्हणून किंवा थेट ग्राहक म्हणून.",
+                farmerTitle: "मी शेतकरी आहे (उत्पादक)",
+                farmerSub: "शून्य दलालीत शेतमाल विका, शासकीय योजना शोधा",
+                farmerBtn: "1-क्लिक शेतकरी लॉगिन (रमेश यादव)",
+                farmerManual: "शेतकरी मोबाईल व पासवर्ड प्रविष्ट करा",
+                buyerTitle: "मी ग्राहक / व्यापारी आहे",
+                buyerSub: "थेट बांधावरून ताजा शेतमाल खरेदी करा",
+                buyerBtn: "1-क्लिक ग्राहक लॉगिन (प्रिया शर्मा)",
+                buyerManual: "ग्राहक ईमेल/फोन व पासवर्ड प्रविष्ट करा",
+                regFarmer: "+ शेतकरी म्हणून नोंदणी करा",
+                regBuyer: "+ ग्राहक म्हणून नोंदणी करा"
+            },
+            te: {
+                title: "కిసాన్ మిత్ర (KisanMitra) కి స్వాగతం",
+                sub: "దయచేసి మీరు ఎలా లాగిన్ అవ్వాలనుకుంటున్నారో ఎంచుకోండి. రైతుగా లేదా కొనుగోలుదారుగా.",
+                farmerTitle: "నేను రైతును (రైతు సోదరుడు)",
+                farmerSub: "0% కమీషన్‌తో పంట అమ్మండి, ప్రభుత్వ సబ్సిడీలు పొందండి",
+                farmerBtn: "1-క్లిక్ రైతు లాగిన్",
+                farmerManual: "రైతు మొబైల్ & పాస్‌వర్డ్ నమోదు చేయండి",
+                buyerTitle: "నేను కొనుగోలుదారుని / వినియోగదారుని",
+                buyerSub: "పొలం వద్దే తాజా పంటను నేరుగా కొనండి",
+                buyerBtn: "1-క్లిక్ కొనుగోలుదారు లాగిన్",
+                buyerManual: "కొనుగోలుదారు వివరాలు & పాస్‌వర్డ్ నమోదు చేయండి",
+                regFarmer: "+ రైతుగా నమోదు చేసుకోండి",
+                regBuyer: "+ కొనుగోలుదారుగా నమోదు చేసుకోండి"
+            },
+            ur: {
+                title: "کسان مِتر (KisanMitra) میں خوش آمدید",
+                sub: "براہ کرم منتخب کریں کہ آپ کیسے لاگ ان ہونا چاہتے ہیں۔ بطور کسان یا بطور خریدار۔",
+                farmerTitle: "میں کسان ہوں (فصل پیدا کرنے والا)",
+                farmerSub: "0% کمیشن پر فصل بیچیں، سرکاری سبسڈی حاصل کریں",
+                farmerBtn: "1-کلک کسان لاگ ان",
+                farmerManual: "کسان موبائل اور پاس ورڈ درج کریں",
+                buyerTitle: "میں خریدار / صارف ہوں",
+                buyerSub: "سیدھے کھیت سے تازہ فصل خریدیں",
+                buyerBtn: "1-کلک خریدار لاگ ان",
+                buyerManual: "خریدار ای میل/فون اور پاس ورڈ درج کریں",
+                regFarmer: "+ کسان کے طور پر رجسٹر کریں",
+                regBuyer: "+ خریدار کے طور پر رجسٹر کریں"
+            },
+            ta: {
+                title: "கிசான் மித்ராவிற்கு (KisanMitra) நல்வரவு",
+                sub: "நீங்கள் எவ்வாறு உள்நுழைய விரும்புகிறீர்கள் என்பதைத் தேர்வுசெய்க. விவசாயியாக அல்லது வாங்குபவராக.",
+                farmerTitle: "நான் ஒரு விவசாயி",
+                farmerSub: "0% தரகில் பயிர்களை விற்கவும், அரசு மானியங்களை பெறவும்",
+                farmerBtn: "1-கிளிக் விவசாயி உள்நுழைவு",
+                farmerManual: "விவசாயி மொபைல் & கடவுச்சொல் உள்ளிடவும்",
+                buyerTitle: "நான் வாங்குபவர் / நுகர்வோர்",
+                buyerSub: "பண்ணையிலிருந்து நேரடியாக புதிய பயிர்களை வாங்கவும்",
+                buyerBtn: "1-கிளிக் வாங்குபவர் உள்நுழைவு",
+                buyerManual: "வாங்குபவர் விவரங்கள் & கடவுச்சொல் உள்ளிடவும்",
+                regFarmer: "+ விவசாயியாக பதிவு செய்க",
+                regBuyer: "+ வாங்குபவராக பதிவு செய்க"
+            },
+            bn: {
+                title: "কিসানমিত্র (KisanMitra) এ আপনাকে স্বাগতম",
+                sub: "অনুগ্রহ করে বেছে নিন আপনি কিভাবে লগইন করতে চান। কৃষক হিসেবে অথবা ক্রেতা হিসেবে।",
+                farmerTitle: "আমি একজন কৃষক",
+                farmerSub: "০% দালালিতে ফসল বিক্রি করুন ও সরকারি অনুদান পান",
+                farmerBtn: "১-ক্লিক কৃষক লগইন",
+                farmerManual: "কৃষক মোবাইল ও পাসওয়ার্ড দিন",
+                buyerTitle: "আমি একজন ক্রেতা / ভোক্তা",
+                buyerSub: "সরাসরি মাঠ থেকে তাজা ফসল কিনুন",
+                buyerBtn: "১-ক্লিক ক্রেতা লগইন",
+                buyerManual: "ক্রেতা ইমেল/ফোন ও পাসওয়ার্ড দিন",
+                regFarmer: "+ কৃষক হিসেবে নিবন্ধন করুন",
+                regBuyer: "+ ক্রেতা হিসেবে নিবন্ধন করুন"
+            },
+            ja: {
+                title: "KisanMitra へようこそ",
+                sub: "ログイン方法を選択してください。農家としてログインするか、購入者としてログインするかを選択できます。",
+                farmerTitle: "私は農家です（生産者）",
+                farmerSub: "手数料0%で作物を直販、政府補助金制度を確認",
+                farmerBtn: "ワンクリック農家ログイン",
+                farmerManual: "農家携帯番号・パスワード入力",
+                buyerTitle: "私は購入者・消費者です",
+                buyerSub: "産地直送の新鮮な農作物を直接調達",
+                buyerBtn: "ワンクリック購入者ログイン",
+                buyerManual: "購入者メール・パスワード入力",
+                regFarmer: "+ 農家として新規登録",
+                regBuyer: "+ 購入者として新規登録"
+            },
+            de: {
+                title: "Willkommen bei KisanMitra",
+                sub: "Bitte wählen Sie, wie Sie sich anmelden möchten: Als Landwirt oder als Käufer.",
+                farmerTitle: "Ich bin Landwirt (Erzeuger)",
+                farmerSub: "Ernte ohne Zwischenhändler verkaufen & Förderungen finden",
+                farmerBtn: "1-Klick-Login als Landwirt",
+                farmerManual: "Handynummer & Passwort eingeben",
+                buyerTitle: "Ich bin Käufer / Verbraucher",
+                buyerSub: "Frische Ernten direkt ab Hof kaufen",
+                buyerBtn: "1-Klick-Login als Käufer",
+                buyerManual: "E-Mail/Telefon & Passwort eingeben",
+                regFarmer: "+ Als Landwirt registrieren",
+                regBuyer: "+ Als Käufer registrieren"
+            },
+            fr: {
+                title: "Bienvenue sur KisanMitra",
+                sub: "Veuillez choisir votre mode de connexion : en tant qu'agriculteur ou en tant qu'acheteur.",
+                farmerTitle: "Je suis Agriculteur (Producteur)",
+                farmerSub: "Vendez sans intermédiaire et découvrez les aides publiques",
+                farmerBtn: "Connexion 1-clic Agriculteur",
+                farmerManual: "Mobile & Mot de passe Agriculteur",
+                buyerTitle: "Je suis Acheteur / Consommateur",
+                buyerSub: "Achetez directement des récoltes fraîches à la ferme",
+                buyerBtn: "Connexion 1-clic Acheteur",
+                buyerManual: "Email/Mobile & Mot de passe Acheteur",
+                regFarmer: "+ S'inscrire comme Agriculteur",
+                regBuyer: "+ S'inscrire comme Acheteur"
+            },
+            zh: {
+                title: "欢迎使用 KisanMitra",
+                sub: "请选择今天的登录身份：农民朋友或直接采购买家。",
+                farmerTitle: "我是农民朋友（生产者）",
+                farmerSub: "零中介费直销农产品，查询申领政府惠农补贴",
+                farmerBtn: "一键农民登录",
+                farmerManual: "输入手机号与密码登录",
+                buyerTitle: "我是买家 / 消费者",
+                buyerSub: "直接从农场采购新鲜高品质农产品",
+                buyerBtn: "一键买家登录",
+                buyerManual: "输入邮箱/手机号与密码登录",
+                regFarmer: "+ 注册为农民用户",
+                regBuyer: "+ 注册为采购买家"
+            },
+            ko: {
+                title: "KisanMitra에 오신 것을 환영합니다",
+                sub: "오늘 로그인할 회원 유형을 선택해 주세요. 농민 또는 구매자로 로그인할 수 있습니다.",
+                farmerTitle: "농민 회원 (생산자)",
+                farmerSub: "수수료 0% 산지 직거래 및 정부 농업 보조금 확인",
+                farmerBtn: "원클릭 농민 로그인",
+                farmerManual: "휴대폰 번호 및 비밀번호 입력",
+                buyerTitle: "구매자 / 소비자 회원",
+                buyerSub: "산지에서 직접 신선한 농산물 직구매",
+                buyerBtn: "원클릭 구매자 로그인",
+                buyerManual: "이메일/연락처 및 비밀번호 입력",
+                regFarmer: "+ 농민으로 신규가입",
+                regBuyer: "+ 구매자로 신규가입"
+            }
+        };
+
+        function changeLoginLanguage(lang) {
+            const dict = loginTranslations[lang] || loginTranslations.en;
+            const titleEl = document.querySelector('h1');
+            const subEl = document.querySelector('p.text-xs.sm\\:text-sm');
+            if (titleEl) titleEl.innerHTML = dict.title;
+            if (subEl) subEl.innerHTML = dict.sub;
+        }
+
+        async function quickLoginRole(role) {
+            try {
+                const res = await fetch('/api/auth/switch_demo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ role })
+                });
+                const data = await res.json();
+                if (data.user) {
+                    window.location.href = '/';
+                }
+            } catch (err) {
+                console.error('Error in quick login:', err);
+            }
+        }
+
+        function openManualLogin(role) {
+            document.getElementById('login_selected_role').value = role;
+            const isFarmer = role === 'farmer';
+
+            document.getElementById('loginModalIcon').textContent = isFarmer ? '🚜' : '🛒';
+            document.getElementById('loginModalTitle').textContent = isFarmer ? 'Farmer Login (किसान लॉगिन)' : 'Buyer Login (खरीदार लॉगिन)';
+            document.getElementById('loginModalSub').textContent = isFarmer ? 'Access crop listings, subsidies & Mandi rates' : 'Access fresh produce marketplace & deals';
+            document.getElementById('login_email_or_phone').value = isFarmer ? 'farmer@kisanmitra.in' : 'buyer@kisanmitra.in';
+            document.getElementById('login_password').value = isFarmer ? 'farmer123' : 'buyer123';
+
+            document.getElementById('manualLoginModal').classList.remove('hidden');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeManualLogin() {
+            document.getElementById('manualLoginModal').classList.add('hidden');
+        }
+
+        function fillDemoCredentials() {
+            const role = document.getElementById('login_selected_role').value;
+            if (role === 'farmer') {
+                document.getElementById('login_email_or_phone').value = 'farmer@kisanmitra.in';
+                document.getElementById('login_password').value = 'farmer123';
+            } else {
+                document.getElementById('login_email_or_phone').value = 'buyer@kisanmitra.in';
+                document.getElementById('login_password').value = 'buyer123';
+            }
+        }
+
+        async function submitCredentialLogin(e) {
+            e.preventDefault();
+            const email_or_phone = document.getElementById('login_email_or_phone').value.trim();
+            const password = document.getElementById('login_password').value.trim();
+
+            try {
+                const res = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email_or_phone, password })
+                });
+                const data = await res.json();
+                if (res.ok && data.user) {
+                    window.location.href = '/';
+                } else {
+                    alert(data.error || 'Login failed. Please check credentials or use 1-Click Demo Login.');
+                }
+            } catch (err) {
+                console.error('Login error:', err);
+            }
+        }
+
+        function openRegisterDialog(role) {
+            const isFarmer = role === 'farmer';
+            document.querySelector(`input[name="reg_role"][value="${role}"]`).checked = true;
+            toggleRegRoleUI(role);
+            document.getElementById('registerModal').classList.remove('hidden');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closeRegisterDialog() {
+            document.getElementById('registerModal').classList.add('hidden');
+        }
+
+        function toggleRegRoleUI(role) {
+            const farmerLabel = document.getElementById('roleOptionFarmer');
+            const buyerLabel = document.getElementById('roleOptionBuyer');
+            if (role === 'farmer') {
+                farmerLabel.className = "flex items-center gap-2 p-2.5 rounded-xl border-2 border-kisan-500 bg-kisan-50 cursor-pointer font-bold text-kisan-900";
+                buyerLabel.className = "flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer font-bold text-slate-700";
+            } else {
+                buyerLabel.className = "flex items-center gap-2 p-2.5 rounded-xl border-2 border-emerald-500 bg-emerald-50 cursor-pointer font-bold text-emerald-900";
+                farmerLabel.className = "flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer font-bold text-slate-700";
+            }
+        }
+
+        async function submitRegistration(e) {
+            e.preventDefault();
+            const role = document.querySelector('input[name="reg_role"]:checked').value;
+            const name = document.getElementById('reg_name').value.trim();
+            const phone = document.getElementById('reg_phone').value.trim();
+            const email_or_phone = document.getElementById('reg_email').value.trim();
+            const state = document.getElementById('reg_state').value.trim();
+            const district = document.getElementById('reg_district').value.trim();
+
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ role, name, phone, email_or_phone, state, district })
+                });
+                const data = await res.json();
+                if (res.ok && data.user) {
+                    window.location.href = '/';
+                } else {
+                    alert(data.error || 'Registration failed');
+                }
+            } catch (err) {
+                console.error('Registration error:', err);
+            }
+        }
+    </script>
+</body>
+</html>

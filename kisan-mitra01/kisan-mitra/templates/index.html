@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KisanMitra (किसान मित्र) - Farmers' Scheme & Direct Market Portal</title>
+    
+    <!-- Meta & PWA tags -->
+    <meta name="theme-color" content="#1b4332">
+    <meta name="description" content="Empowering Indian farmers with direct government scheme access and direct-to-consumer marketplace with zero middlemen commission.">
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌾</text></svg>">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Yatra+One&family=Rozha+One&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN with custom config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        kisan: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            950: '#052e16',
+                            leaf: '#2d6a4f',
+                            deep: '#1b4332',
+                            gold: '#d4a373',
+                            harvest: '#e9c46a',
+                            earth: '#9c6644',
+                            soil: '#582f0e',
+                            cream: '#fefae0',
+                            mint: '#d8f3dc'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        hindi: ['"Yatra One"', 'sans-serif'],
+                        heading: ['"Rozha One"', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Lucide Icons & Chart.js CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="bg-[#f7faf7] text-slate-800 font-sans min-h-screen flex flex-col antialiased selection:bg-kisan-500 selection:text-white">
+
+    <!-- Top Announcement & Multilingual Bar -->
+    <div class="bg-kisan-950 text-white text-xs sm:text-sm py-2 px-4 border-b border-kisan-800/60">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center gap-2 text-kisan-200">
+                <span class="inline-flex items-center justify-center p-1 bg-kisan-800 rounded-full text-xs animate-pulse">🌱</span>
+                <span class="font-medium" data-i18n="announcement">Direct Farmer-to-Buyer Platform • 0% Middlemen Commission • 100% Farmer Profit</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <!-- Language Selector -->
+                <div class="flex items-center gap-1 bg-kisan-900/80 px-2.5 py-1 rounded-lg border border-kisan-700/60 text-xs">
+                    <i data-lucide="globe" class="w-3.5 h-3.5 text-kisan-400"></i>
+                    <select id="languageSelect" onchange="changeLanguage(this.value)" class="bg-transparent text-white outline-none cursor-pointer text-xs font-semibold">
+                        <option value="en" class="text-gray-900" selected>English</option>
+                        <option value="hi" class="text-gray-900">हिन्दी (Hindi)</option>
+                        <option value="pa" class="text-gray-900">ਪੰਜਾਬੀ (Punjabi)</option>
+                        <option value="mr" class="text-gray-900">मराठी (Marathi)</option>
+                        <option value="te" class="text-gray-900">తెలుగు (Telugu)</option>
+                        <option value="ur" class="text-gray-900">اردو (Urdu)</option>
+                        <option value="ta" class="text-gray-900">தமிழ் (Tamil)</option>
+                        <option value="bn" class="text-gray-900">বাংলা (Bengali)</option>
+                        <option value="ja" class="text-gray-900">日本語 (Japanese)</option>
+                        <option value="de" class="text-gray-900">Deutsch (German)</option>
+                        <option value="fr" class="text-gray-900">Français (French)</option>
+                        <option value="zh" class="text-gray-900">中文 (Chinese)</option>
+                        <option value="ko" class="text-gray-900">한국어 (Korean)</option>
+                    </select>
+                </div>
+                <!-- PWA Install Badge -->
+                <button id="pwaInstallBtn" onclick="installPWA()" class="hidden items-center gap-1 bg-kisan-600 hover:bg-kisan-500 text-white px-2.5 py-1 rounded-lg text-xs font-bold transition shadow-sm">
+                    <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                    <span>Install App</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Header -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-kisan-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo & Brand -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('marketplace')">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-kisan-600 to-kisan-900 flex items-center justify-center text-white shadow-md shadow-kisan-900/20 ring-2 ring-kisan-300">
+                        <span class="text-2xl">🌾</span>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl font-extrabold text-kisan-900 tracking-tight font-sans">Kisan<span class="text-kisan-600">Mitra</span></span>
+                            <span class="bg-gradient-to-r from-kisan-100 to-amber-100 text-kisan-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-kisan-300">किसान मित्र</span>
+                        </div>
+                        <p class="text-[11px] text-kisan-700 font-medium tracking-wide" data-i18n="tagline">Empowering Farmers & Direct Consumers</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Nav Links -->
+                <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
+                    <button onclick="switchTab('schemes')" id="nav-schemes" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:text-kisan-700 hover:bg-kisan-50 transition flex items-center gap-2">
+                        <i data-lucide="award" class="w-4 h-4 text-kisan-600"></i>
+                        <span data-i18n="nav_schemes">Govt Schemes</span>
+                    </button>
+                    <button onclick="switchTab('marketplace')" id="nav-marketplace" class="nav-btn active px-3.5 py-2 rounded-xl text-sm font-semibold text-kisan-900 bg-kisan-100/80 transition flex items-center gap-2">
+                        <i data-lucide="store" class="w-4 h-4 text-kisan-700"></i>
+                        <span data-i18n="nav_marketplace">Direct Market</span>
+                    </button>
+                    <button onclick="switchTab('mandi')" id="nav-mandi" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:text-kisan-700 hover:bg-kisan-50 transition flex items-center gap-2">
+                        <i data-lucide="trending-up" class="w-4 h-4 text-kisan-600"></i>
+                        <span data-i18n="nav_mandi">Live Mandi Rates</span>
+                    </button>
+                    <button onclick="switchTab('advisory')" id="nav-advisory" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:text-kisan-700 hover:bg-kisan-50 transition flex items-center gap-2">
+                        <i data-lucide="cloud-sun" class="w-4 h-4 text-kisan-600"></i>
+                        <span data-i18n="nav_advisory">Weather & Advisory</span>
+                    </button>
+                    <button onclick="switchTab('deals')" id="nav-deals" class="nav-btn px-3.5 py-2 rounded-xl text-sm font-semibold text-slate-700 hover:text-kisan-700 hover:bg-kisan-50 transition flex items-center gap-2 relative">
+                        <i data-lucide="handshake" class="w-4 h-4 text-kisan-600"></i>
+                        <span data-i18n="nav_deals">My Deals</span>
+                        <span id="dealsBadge" class="hidden absolute -top-1 -right-1 bg-amber-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">1</span>
+                    </button>
+                </nav>
+
+                <!-- Persona Switcher & User Profile -->
+                <div class="flex items-center gap-3">
+                    <!-- Quick Demo Role Switcher -->
+                    <div class="bg-kisan-100 p-1 rounded-xl flex items-center border border-kisan-300 shadow-inner">
+                        <button onclick="switchDemoRole('farmer')" id="roleBtnFarmer" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm bg-kisan-700 text-white">
+                            <span>🚜</span>
+                            <span data-i18n="role_farmer">Farmer View</span>
+                        </button>
+                        <button onclick="switchDemoRole('buyer')" id="roleBtnBuyer" class="px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-700 hover:text-kisan-800">
+                            <span>🛒</span>
+                            <span data-i18n="role_buyer">Buyer View</span>
+                        </button>
+                    </div>
+
+                    <!-- User Profile Dropdown / Login -->
+                    <div class="relative">
+                        <button onclick="toggleUserDropdown()" class="flex items-center gap-2.5 p-1.5 sm:px-3 sm:py-2 rounded-xl bg-kisan-50 hover:bg-kisan-100 border border-kisan-200 transition">
+                            <div class="w-8 h-8 rounded-lg bg-kisan-600 text-white flex items-center justify-center text-sm font-bold shadow-sm" id="userAvatar">
+                                R
+                            </div>
+                            <div class="hidden sm:block text-left">
+                                <div class="text-xs font-bold text-slate-900 truncate max-w-[120px]" id="userNameDisplay">Ramesh Yadav</div>
+                                <div class="text-[10px] font-semibold text-kisan-700 uppercase tracking-wider" id="userRoleBadge">Farmer</div>
+                            </div>
+                            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-500"></i>
+                        </button>
+
+                        <!-- Profile Dropdown Menu -->
+                        <div id="userDropdownMenu" class="hidden absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-kisan-200 py-2 z-50 animate-in fade-in zoom-in-95">
+                            <div class="px-4 py-3 border-b border-gray-100 bg-kisan-50/50">
+                                <p class="text-xs text-slate-500">Logged in as</p>
+                                <p class="text-sm font-bold text-slate-900" id="dropdownUserName">Ramesh Kumar Yadav</p>
+                                <p class="text-xs text-kisan-700 font-medium" id="dropdownUserLocation">Varanasi, UP</p>
+                            </div>
+                            <div class="p-2 space-y-1">
+                                <a href="/login" class="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-kisan-50 hover:text-kisan-800 rounded-lg flex items-center gap-2 transition">
+                                    <i data-lucide="log-in" class="w-4 h-4 text-kisan-600"></i>
+                                    <span>Login Page (Farmer / Buyer Choice)</span>
+                                </a>
+                                <button onclick="openRegisterModal()" class="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-kisan-50 hover:text-kisan-800 rounded-lg flex items-center gap-2 transition">
+                                    <i data-lucide="user-plus" class="w-4 h-4 text-kisan-600"></i>
+                                    <span>Register New Account</span>
+                                </button>
+                                <button onclick="openKisanAIAssistant()" class="w-full text-left px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-kisan-50 hover:text-kisan-800 rounded-lg flex items-center gap-2 transition">
+                                    <i data-lucide="bot" class="w-4 h-4 text-amber-600"></i>
+                                    <span>Kisan AI Assistant</span>
+                                </button>
+                                <div class="border-t border-gray-100 my-1"></div>
+                                <a href="/logout" class="w-full text-left px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-lg flex items-center gap-2 transition">
+                                    <i data-lucide="log-out" class="w-4 h-4 text-red-500"></i>
+                                    <span>Logout (लॉगआउट)</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Body -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- ======================================================== -->
+        <!-- TAB 1: DIRECT PRODUCE MARKETPLACE (Default)             -->
+        <!-- ======================================================== -->
+        <section id="tab-marketplace" class="tab-content block space-y-6">
+            
+            <!-- Hero Banner: Zero Middleman Concept -->
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-kisan-900 via-kisan-800 to-kisan-950 text-white p-6 sm:p-10 shadow-xl border border-kisan-700/50">
+                <div class="absolute -right-10 -bottom-10 opacity-15 pointer-events-none">
+                    <svg width="400" height="400" viewBox="0 0 200 200" fill="currentColor">
+                        <path d="M40,-65C52.4,-58.5,63.2,-48.6,71.2,-36.4C79.2,-24.2,84.4,-9.7,82.4,4.1C80.4,17.9,71.1,31,61.1,42.4C51.1,53.8,40.4,63.4,28.2,68.8C16,74.1,2.2,75.1,-11.3,73.1C-24.8,71.1,-38.1,66.1,-49.2,57.9C-60.3,49.7,-69.3,38.2,-74.6,25.2C-79.9,12.2,-81.6,-2.3,-77.8,-15.6C-74.1,-28.9,-64.9,-41,-53.4,-47.8C-41.9,-54.6,-28.1,-56,-14.8,-60.7C-1.5,-65.4,11.8,-73.4,25.5,-73.3C39.2,-73.2,53.3,-65,40,-65Z" transform="translate(100 100)" />
+                    </svg>
+                </div>
+                
+                <div class="relative z-10 max-w-3xl space-y-4">
+                    <div class="inline-flex items-center gap-2 bg-kisan-700/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-kisan-500/40 text-xs font-bold text-kisan-200">
+                        <span>🌱</span>
+                        <span data-i18n="hero_badge">Zero Brokerage • Direct Farm Gate Procurement</span>
+                    </div>
+                    <h1 class="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+                        <span class="text-white" data-i18n="hero_title_1">Connecting Our</span> 
+                        <span class="text-kisan-300 underline decoration-amber-400 decoration-wavy decoration-2" data-i18n="hero_title_2">Kisan Brothers</span> 
+                        <span class="text-white" data-i18n="hero_title_3">Directly With Buyers</span>
+                    </h1>
+                    <p class="text-sm sm:text-base text-kisan-100 font-normal leading-relaxed" data-i18n="hero_subtitle">
+                        Eliminating intermediaries ensures our farmer brothers get 20% to 30% higher income, while consumers and buyers enjoy 100% farm-fresh authentic harvest at fair wholesale prices.
+                    </p>
+
+                    <!-- Middleman Comparison Card -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                        <div class="bg-black/25 backdrop-blur-md p-3.5 rounded-2xl border border-red-400/30 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-red-500/20 text-red-300 flex items-center justify-center font-bold text-lg">❌</div>
+                            <div>
+                                <div class="text-xs font-bold text-red-200">Old Middleman Mandi System</div>
+                                <div class="text-[11px] text-gray-300">Brokers take 20-30% cut; Farmers receive low prices, consumers pay high.</div>
+                            </div>
+                        </div>
+                        <div class="bg-emerald-950/60 backdrop-blur-md p-3.5 rounded-2xl border border-kisan-400/50 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-kisan-500/30 text-kisan-300 flex items-center justify-center font-bold text-lg">✨</div>
+                            <div>
+                                <div class="text-xs font-bold text-kisan-300">KisanMitra Direct Model</div>
+                                <div class="text-[11px] text-kisan-100">0% Commission. Direct WhatsApp/Call deal. Full profit goes to farmer.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-wrap items-center gap-3 pt-2">
+                        <button onclick="openCreateListingModal()" class="px-5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold text-sm shadow-lg shadow-amber-900/30 transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                            <span data-i18n="btn_list_harvest">+ List Your Crop (नई फसल बेचें)</span>
+                        </button>
+                        <button onclick="switchTab('schemes')" class="px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm backdrop-blur-md border border-white/20 transition flex items-center gap-2">
+                            <i data-lucide="sparkles" class="w-4 h-4 text-amber-300"></i>
+                            <span data-i18n="btn_check_subsidies">Find Govt Subsidies</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Marketplace Search & Filter Controls -->
+            <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-kisan-200 space-y-4">
+                <div class="flex flex-col md:flex-row gap-3 items-center justify-between">
+                    <!-- Search Input -->
+                    <div class="relative w-full md:w-96">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400"></i>
+                        <input type="text" id="produceSearchInput" oninput="debounceSearchProduce()" placeholder="Search crops (Basmati Rice, Wheat, Onions, Mustard...)" class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-kisan-500 focus:border-kisan-500 text-sm bg-gray-50/50">
+                    </div>
+
+                    <!-- State Selector & Organic Filter Toggle -->
+                    <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
+                        <select id="produceStateFilter" onchange="loadProduce()" class="px-3 py-2 rounded-xl border border-gray-200 text-xs font-semibold bg-white focus:ring-2 focus:ring-kisan-500 outline-none">
+                            <option value="all">All States across India</option>
+                            <option value="Uttar Pradesh">Uttar Pradesh (उत्तर प्रदेश)</option>
+                            <option value="Punjab">Punjab (ਪੰਜਾਬ)</option>
+                            <option value="Haryana">Haryana (हरियाणा)</option>
+                            <option value="Madhya Pradesh">Madhya Pradesh (मध्य प्रदेश)</option>
+                            <option value="Maharashtra">Maharashtra (महाराष्ट्र)</option>
+                            <option value="Rajasthan">Rajasthan (राजस्थान)</option>
+                            <option value="Gujarat">Gujarat (गुजरात)</option>
+                        </select>
+
+                        <label class="flex items-center gap-2 bg-emerald-50 text-kisan-900 border border-kisan-200 px-3 py-2 rounded-xl text-xs font-bold cursor-pointer hover:bg-emerald-100 transition select-none">
+                            <input type="checkbox" id="produceOrganicFilter" onchange="loadProduce()" class="rounded text-kisan-600 focus:ring-kisan-500">
+                            <span>🌿 100% Organic Only</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Category Pills -->
+                <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs no-scrollbar" id="categoryPillContainer">
+                    <button onclick="setCategoryFilter('all')" class="cat-pill active px-4 py-2 rounded-full font-bold bg-kisan-700 text-white shadow-sm whitespace-nowrap">All Produce</button>
+                    <button onclick="setCategoryFilter('Grains')" class="cat-pill px-4 py-2 rounded-full font-semibold bg-gray-100 hover:bg-kisan-50 text-slate-700 whitespace-nowrap">🌾 Grains & Cereals</button>
+                    <button onclick="setCategoryFilter('Vegetables')" class="cat-pill px-4 py-2 rounded-full font-semibold bg-gray-100 hover:bg-kisan-50 text-slate-700 whitespace-nowrap">🥦 Fresh Vegetables</button>
+                    <button onclick="setCategoryFilter('Fruits')" class="cat-pill px-4 py-2 rounded-full font-semibold bg-gray-100 hover:bg-kisan-50 text-slate-700 whitespace-nowrap">🍎 Fruits & Orchards</button>
+                    <button onclick="setCategoryFilter('Oilseeds')" class="cat-pill px-4 py-2 rounded-full font-semibold bg-gray-100 hover:bg-kisan-50 text-slate-700 whitespace-nowrap">🌻 Mustard & Oilseeds</button>
+                    <button onclick="setCategoryFilter('Pulses')" class="cat-pill px-4 py-2 rounded-full font-semibold bg-gray-100 hover:bg-kisan-50 text-slate-700 whitespace-nowrap">🫘 Pulses & Dal</button>
+                    <button onclick="setCategoryFilter('Organic Special')" class="cat-pill px-4 py-2 rounded-full font-semibold bg-gray-100 hover:bg-kisan-50 text-slate-700 whitespace-nowrap">🍯 Pure Honey & Organic</button>
+                </div>
+            </div>
+
+            <!-- Produce Cards Grid -->
+            <div id="produceGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically Populated by JS -->
+            </div>
+        </section>
+
+
+        <!-- ======================================================== -->
+        <!-- TAB 2: GOVERNMENT SCHEMES & SMART ELIGIBILITY FINDER    -->
+        <!-- ======================================================== -->
+        <section id="tab-schemes" class="tab-content hidden space-y-6">
+            
+            <!-- Schemes Banner -->
+            <div class="rounded-3xl bg-gradient-to-r from-emerald-900 via-kisan-800 to-teal-900 text-white p-6 sm:p-8 shadow-lg border border-emerald-700/50 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div class="space-y-2 max-w-2xl">
+                    <div class="inline-flex items-center gap-2 bg-emerald-800/80 px-3 py-1 rounded-full text-xs font-bold text-emerald-200 border border-emerald-500/30">
+                        <i data-lucide="landmark" class="w-3.5 h-3.5"></i>
+                        <span data-i18n="schemes_badge">Central & State Govt Schemes Directory</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white" data-i18n="schemes_title">
+                        Government Subsidies & Benefits for Farmers
+                    </h2>
+                    <p class="text-xs sm:text-sm text-emerald-100" data-i18n="schemes_subtitle">
+                        Discover 100% verified government grants, solar pump 90% subsidies, ₹6,000 PM-Kisan financial transfers, crop insurance, and tractor mechanization schemes.
+                    </p>
+                </div>
+                <button onclick="scrollToEligibilityChecker()" class="px-5 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs sm:text-sm shadow-md transition flex items-center gap-2 shrink-0">
+                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                    <span data-i18n="btn_check_eligibility">Check Your Eligibility (पात्रता जांचें)</span>
+                </button>
+            </div>
+
+            <!-- Smart Eligibility Calculator Box -->
+            <div id="eligibilityCheckerBox" class="bg-gradient-to-br from-emerald-50 via-white to-kisan-50 rounded-3xl p-6 sm:p-8 shadow-sm border-2 border-kisan-300 space-y-5">
+                <div class="flex items-center justify-between border-b border-kisan-200 pb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-kisan-600 text-white flex items-center justify-center font-bold shadow-md">
+                            🎯
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-extrabold text-kisan-950" data-i18n="eligibility_header">Smart Scheme Eligibility Matcher</h3>
+                            <p class="text-xs text-kisan-800" data-i18n="eligibility_sub">Enter your farm details to instantly get tailored subsidies and grants you can claim today.</p>
+                        </div>
+                    </div>
+                    <span class="text-xs bg-kisan-200 text-kisan-900 font-bold px-3 py-1 rounded-full">Kisan AI Match</span>
+                </div>
+
+                <form id="eligibilityForm" onsubmit="calculateEligibility(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Land Holding -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5" data-i18n="label_land_size">Land Holding (Hectares / Acres)</label>
+                        <select id="el_land_size" class="w-full p-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:ring-2 focus:ring-kisan-500 bg-white">
+                            <option value="1.0">Marginal Farmer (< 1 Hectare / 2.5 Acres)</option>
+                            <option value="2.0" selected>Small Farmer (1 - 2 Hectares / 2.5 - 5 Acres)</option>
+                            <option value="4.0">Semi-Medium (2 - 4 Hectares)</option>
+                            <option value="8.0">Medium/Large (> 4 Hectares)</option>
+                        </select>
+                    </div>
+
+                    <!-- State -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5" data-i18n="label_state">Your State (राज्य)</label>
+                        <select id="el_state" class="w-full p-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:ring-2 focus:ring-kisan-500 bg-white">
+                            <option value="Uttar Pradesh" selected>Uttar Pradesh (उत्तर प्रदेश)</option>
+                            <option value="Punjab">Punjab (ਪੰਜਾਬ)</option>
+                            <option value="Haryana">Haryana (हरियाणा)</option>
+                            <option value="Madhya Pradesh">Madhya Pradesh (मध्य प्रदेश)</option>
+                            <option value="Maharashtra">Maharashtra (महाराष्ट्र)</option>
+                            <option value="Rajasthan">Rajasthan (राजस्थान)</option>
+                            <option value="Bihar">Bihar (बिहार)</option>
+                            <option value="All">Other States</option>
+                        </select>
+                    </div>
+
+                    <!-- Crop Sown -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5" data-i18n="label_crop_type">Primary Crops Grown</label>
+                        <select id="el_crop_type" class="w-full p-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:ring-2 focus:ring-kisan-500 bg-white">
+                            <option value="wheat_paddy" selected>Paddy / Wheat (धान / गेहूं)</option>
+                            <option value="vegetables">Vegetables & Fruits (सब्जियां / फल)</option>
+                            <option value="oilseeds_pulses">Mustard / Pulses (सरसों / दालें)</option>
+                            <option value="sugarcane_cotton">Sugarcane / Cotton (गन्ना / कपास)</option>
+                            <option value="dairy_beekeeping">Dairy / Beekeeping (डेयरी / मधुमक्खी)</option>
+                        </select>
+                    </div>
+
+                    <!-- Irrigation & Organic Toggle -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5" data-i18n="label_irrigation">Water Source & Practices</label>
+                        <div class="flex items-center gap-2">
+                            <select id="el_irrigation" class="w-full p-2.5 rounded-xl border border-gray-300 text-xs font-semibold focus:ring-2 focus:ring-kisan-500 bg-white">
+                                <option value="borewell" selected>Borewell / Tubewell</option>
+                                <option value="rainfed">Rainfed (बारानी)</option>
+                                <option value="canal">Canal Irrigation (नहर)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="sm:col-span-2 lg:col-span-4 flex flex-wrap items-center justify-between gap-4 pt-2">
+                        <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-kisan-900 bg-white px-3 py-2 rounded-xl border border-kisan-200">
+                            <input type="checkbox" id="el_is_organic" checked class="rounded text-kisan-600 focus:ring-kisan-500">
+                            <span>🌿 Practicing or interested in Organic / Natural Farming (+₹50,000 PKVY Scheme)</span>
+                        </label>
+                        <button type="submit" class="px-6 py-2.5 bg-kisan-700 hover:bg-kisan-800 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-2">
+                            <i data-lucide="search" class="w-3.5 h-3.5"></i>
+                            <span data-i18n="btn_find_matching">Find Matched Schemes</span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Matched Schemes Output Banner -->
+                <div id="eligibilityResultsBanner" class="hidden p-4 rounded-2xl bg-emerald-100 border border-emerald-300 text-emerald-950 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">🎉</span>
+                        <div>
+                            <div class="text-xs font-bold" id="matchCountText">Matched 6 Government Subsidies for your profile!</div>
+                            <div class="text-[11px] text-emerald-800">You are eligible for up to ₹3,50,000 in total financial and machinery assistance.</div>
+                        </div>
+                    </div>
+                    <button onclick="loadSchemes()" class="text-xs font-bold text-emerald-800 underline hover:text-emerald-950">Show All Schemes</button>
+                </div>
+            </div>
+
+            <!-- Schemes Filter Pills -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs no-scrollbar" id="schemeFilterBar">
+                <button onclick="filterSchemesByCategory('all')" class="scheme-pill active px-4 py-2 rounded-full font-bold bg-kisan-700 text-white shadow-sm whitespace-nowrap">All Schemes (सभी योजनाएं)</button>
+                <button onclick="filterSchemesByCategory('financial_subsidy')" class="scheme-pill px-4 py-2 rounded-full font-semibold bg-white border border-gray-200 hover:bg-kisan-50 text-slate-700 whitespace-nowrap">💰 Financial Support (PM-Kisan)</button>
+                <button onclick="filterSchemesByCategory('solar_energy')" class="scheme-pill px-4 py-2 rounded-full font-semibold bg-white border border-gray-200 hover:bg-kisan-50 text-slate-700 whitespace-nowrap">☀️ Solar Pumps (PM-KUSUM)</button>
+                <button onclick="filterSchemesByCategory('machinery_tools')" class="scheme-pill px-4 py-2 rounded-full font-semibold bg-white border border-gray-200 hover:bg-kisan-50 text-slate-700 whitespace-nowrap">🚜 Tractor & Machinery (SMAM)</button>
+                <button onclick="filterSchemesByCategory('crop_insurance')" class="scheme-pill px-4 py-2 rounded-full font-semibold bg-white border border-gray-200 hover:bg-kisan-50 text-slate-700 whitespace-nowrap">🛡️ Crop Insurance (PMFBY)</button>
+                <button onclick="filterSchemesByCategory('organic_farming')" class="scheme-pill px-4 py-2 rounded-full font-semibold bg-white border border-gray-200 hover:bg-kisan-50 text-slate-700 whitespace-nowrap">🌿 Organic Farming (PKVY)</button>
+                <button onclick="filterSchemesByCategory('credit_loan')" class="scheme-pill px-4 py-2 rounded-full font-semibold bg-white border border-gray-200 hover:bg-kisan-50 text-slate-700 whitespace-nowrap">💳 4% Kisan Credit Card (KCC)</button>
+                <button onclick="filterSchemesByCategory('irrigation')" class="scheme-pill px-4 py-2 rounded-full font-semibold bg-white border border-gray-200 hover:bg-kisan-50 text-slate-700 whitespace-nowrap">💧 Drip Irrigation (PMKSY)</button>
+            </div>
+
+            <!-- Schemes Grid -->
+            <div id="schemesGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Populated dynamically via JS -->
+            </div>
+        </section>
+
+
+        <!-- ======================================================== -->
+        <!-- TAB 3: LIVE MANDI PRICES & MARKET TRENDS                 -->
+        <!-- ======================================================== -->
+        <section id="tab-mandi" class="tab-content hidden space-y-6">
+            <div class="rounded-3xl bg-gradient-to-r from-amber-900 via-amber-800 to-yellow-900 text-white p-6 sm:p-8 shadow-lg border border-amber-600/40 space-y-2">
+                <div class="inline-flex items-center gap-2 bg-amber-700/80 px-3 py-1 rounded-full text-xs font-bold text-amber-200 border border-amber-500/30">
+                    <i data-lucide="line-chart" class="w-3.5 h-3.5"></i>
+                    <span>Real-Time APMC Mandi Intelligence</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white" data-i18n="mandi_title">Live Mandi Market Rates & Trends</h2>
+                <p class="text-xs sm:text-sm text-amber-100" data-i18n="mandi_sub">
+                    Compare today's mandi modal prices before setting your direct farm sale price. Stay informed on price spikes and harvest demand.
+                </p>
+            </div>
+
+            <!-- Interactive Chart.js Mandi Trend Card -->
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-kisan-200 space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-100 pb-4">
+                    <div>
+                        <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                            <span>📈 7-Day Price Movement & Trends</span>
+                            <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-md">Live Trend</span>
+                        </h3>
+                        <p class="text-xs text-slate-500">Historical modal trading rate per quintal across major APMCs</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <select id="mandiChartCropSelect" onchange="updateMandiChart()" class="px-3 py-1.5 rounded-xl border border-gray-200 text-xs font-bold bg-gray-50 focus:ring-2 focus:ring-kisan-500 outline-none">
+                            <option value="Basmati Paddy (बासमती धान)">Basmati Paddy (बासमती धान)</option>
+                            <option value="Wheat (गेहूं)">Wheat (गेहूं)</option>
+                            <option value="Mustard Seed (सरसों)">Mustard Seed (सरसों)</option>
+                            <option value="Red Onion (लाल प्याज)">Red Onion (लाल प्याज)</option>
+                            <option value="Cotton (कपास)">Cotton (कपास)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Chart Container -->
+                <div class="h-64 sm:h-72 w-full">
+                    <canvas id="mandiPriceChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Mandi Rates Table Card -->
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-kisan-200 space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-base font-extrabold text-slate-900" data-i18n="mandi_board_header">Today's State-wise Mandi Rates</h3>
+                    <span class="text-xs text-kisan-700 font-semibold flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Live Market Feed
+                    </span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-kisan-50 text-kisan-900 uppercase font-bold border-b border-kisan-200">
+                            <tr>
+                                <th class="p-3 rounded-l-xl">Commodity (फसल)</th>
+                                <th class="p-3">Market / Mandi</th>
+                                <th class="p-3">State</th>
+                                <th class="p-3">Min Price</th>
+                                <th class="p-3">Max Price</th>
+                                <th class="p-3 font-extrabold text-kisan-900">Modal Rate</th>
+                                <th class="p-3 rounded-r-xl">Trend</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mandiTableBody" class="divide-y divide-gray-100">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ======================================================== -->
+        <!-- TAB 4: WEATHER & SEASONAL CROP ADVISORY                 -->
+        <!-- ======================================================== -->
+        <section id="tab-advisory" class="tab-content hidden space-y-6">
+            
+            <!-- Weather Widget Card -->
+            <div class="rounded-3xl bg-gradient-to-br from-teal-900 via-kisan-900 to-emerald-950 text-white p-6 sm:p-8 shadow-xl border border-teal-700/50 space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-teal-700/50 pb-4">
+                    <div>
+                        <div class="inline-flex items-center gap-2 bg-teal-800/80 px-3 py-1 rounded-full text-xs font-bold text-teal-200 border border-teal-500/30">
+                            <i data-lucide="sun" class="w-3.5 h-3.5"></i>
+                            <span>Agro-Meteorological Live Advisory</span>
+                        </div>
+                        <h2 class="text-2xl font-extrabold text-white mt-1">Farm Weather & Spray Forecast</h2>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-3xl font-extrabold text-amber-300" id="weatherCurrentTemp">29°C</div>
+                        <div class="text-xs text-teal-200" id="weatherCondition">Partly Sunny • Ideal for Sowing</div>
+                    </div>
+                </div>
+
+                <!-- Weather Metrics Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div class="bg-black/25 p-3.5 rounded-2xl border border-teal-600/30">
+                        <div class="text-xs text-teal-200 font-medium">Humidity (नमी)</div>
+                        <div class="text-lg font-bold text-white mt-0.5" id="weatherHumidity">62%</div>
+                    </div>
+                    <div class="bg-black/25 p-3.5 rounded-2xl border border-teal-600/30">
+                        <div class="text-xs text-teal-200 font-medium">Rain Probability</div>
+                        <div class="text-lg font-bold text-white mt-0.5" id="weatherRainChance">15% (Low Risk)</div>
+                    </div>
+                    <div class="bg-black/25 p-3.5 rounded-2xl border border-teal-600/30">
+                        <div class="text-xs text-teal-200 font-medium">Wind Speed</div>
+                        <div class="text-lg font-bold text-white mt-0.5" id="weatherWind">11 km/h (Calm)</div>
+                    </div>
+                    <div class="bg-black/25 p-3.5 rounded-2xl border border-teal-600/30">
+                        <div class="text-xs text-teal-200 font-medium">Pesticide Spray Window</div>
+                        <div class="text-lg font-bold text-emerald-400 mt-0.5">Optimal Today</div>
+                    </div>
+                </div>
+
+                <!-- 5-Day Forecast -->
+                <div class="space-y-2 pt-2">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-teal-300">5-Day Agricultural Weather Forecast</h4>
+                    <div class="grid grid-cols-2 sm:grid-cols-5 gap-3" id="weatherForecastGrid">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Crop Advisories Cards -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-extrabold text-slate-900">Crop-Wise Scientific Advisories & Pest Management</h3>
+                    <span class="text-xs text-kisan-700 font-bold bg-kisan-100 px-3 py-1 rounded-full">ICAR Verified</span>
+                </div>
+
+                <div id="cropAdvisoryGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ======================================================== -->
+        <!-- TAB 5: MY DEALS & NEGOTIATIONS TRACKER                  -->
+        <!-- ======================================================== -->
+        <section id="tab-deals" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-kisan-200 space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-100 pb-4">
+                    <div>
+                        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 flex items-center gap-2">
+                            <span>🤝 Direct Negotiations & Orders</span>
+                            <span class="text-xs bg-kisan-100 text-kisan-800 font-bold px-2.5 py-1 rounded-full" id="dealsRoleIndicator">Farmer Deals</span>
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Review incoming buyer purchase offers, agree on prices, and connect over WhatsApp</p>
+                    </div>
+                    <button onclick="loadDeals()" class="px-4 py-2 rounded-xl bg-kisan-50 hover:bg-kisan-100 text-kisan-800 border border-kisan-200 text-xs font-bold transition flex items-center gap-2">
+                        <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>
+                        <span>Refresh Deals</span>
+                    </button>
+                </div>
+
+                <!-- Orders Container -->
+                <div id="dealsContainer" class="space-y-4">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+
+    <!-- ======================================================== -->
+    <!-- MODALS & DIALOGS                                         -->
+    <!-- ======================================================== -->
+
+    <!-- Modal 1: Scheme Details & Audio Reader Modal -->
+    <div id="schemeDetailModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-kisan-200 p-6 sm:p-8 space-y-6 animate-in zoom-in-95">
+            <div class="flex justify-between items-start border-b border-gray-100 pb-4">
+                <div class="space-y-1">
+                    <span id="modalSchemeCategoryBadge" class="text-[11px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full">Financial Subsidy</span>
+                    <h3 id="modalSchemeTitle" class="text-xl font-extrabold text-slate-900 mt-2">PM-Kisan Samman Nidhi</h3>
+                    <p id="modalSchemeHindiTitle" class="text-sm font-semibold text-kisan-700">प्रधानमंत्री किसान सम्मान निधि</p>
+                </div>
+                <button onclick="closeSchemeModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-slate-500">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <!-- Audio Voice Player Button for Farmers -->
+            <div class="bg-gradient-to-r from-emerald-800 to-kisan-900 text-white p-4 rounded-2xl flex items-center justify-between shadow-md">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center text-xl animate-bounce">
+                        📢
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-emerald-200">Kisan Audio Sahayak (योजना सुनें)</div>
+                        <div class="text-[11px] text-emerald-100">Listen to scheme details read out aloud in Hindi/English</div>
+                    </div>
+                </div>
+                <button id="ttsPlayBtn" onclick="toggleSchemeSpeech()" class="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs shadow-sm flex items-center gap-2 transition">
+                    <i data-lucide="volume-2" class="w-4 h-4"></i>
+                    <span id="ttsBtnText">Play Audio (सुनें)</span>
+                </button>
+            </div>
+
+            <!-- Scheme Benefits Card -->
+            <div class="bg-kisan-50 p-4 rounded-2xl border border-kisan-200 space-y-2">
+                <div class="text-xs font-bold text-kisan-950 uppercase tracking-wider">Subsidy & Grant Details (अनुदान लाभ)</div>
+                <div id="modalSchemeSubsidy" class="text-base font-extrabold text-kisan-800">₹6,000 / Year Direct in Bank</div>
+                <p id="modalSchemeDescription" class="text-xs text-slate-700 leading-relaxed"></p>
+            </div>
+
+            <!-- Required Documents Checklist -->
+            <div class="space-y-2">
+                <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                    <i data-lucide="file-check-2" class="w-4 h-4 text-kisan-600"></i>
+                    <span>Required Documents Checklist (आवश्यक दस्तावेज़)</span>
+                </h4>
+                <div id="modalSchemeDocuments" class="space-y-1.5 text-xs text-slate-700">
+                    <!-- Checkboxes populated via JS -->
+                </div>
+            </div>
+
+            <!-- Step by Step How to Apply -->
+            <div class="space-y-2">
+                <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+                    <i data-lucide="list-ordered" class="w-4 h-4 text-kisan-600"></i>
+                    <span>Step-by-Step Application Guide (आवेदन कैसे करें)</span>
+                </h4>
+                <div id="modalSchemeSteps" class="space-y-2 text-xs text-slate-700">
+                    <!-- Steps populated via JS -->
+                </div>
+            </div>
+
+            <!-- Helpline & Official Portal Link -->
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-3 pt-4 border-t border-gray-100">
+                <div class="flex items-center gap-2 text-xs text-slate-600">
+                    <i data-lucide="phone-call" class="w-4 h-4 text-kisan-600"></i>
+                    <span>Helpline: <strong id="modalSchemeHelpline" class="text-slate-900">155261</strong></span>
+                </div>
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <a id="modalSchemeApplyLink" href="#" target="_blank" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-kisan-700 hover:bg-kisan-800 text-white font-bold text-xs text-center shadow-md flex items-center justify-center gap-2 transition">
+                        <span>Open Official Govt Portal</span>
+                        <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal 2: Create Harvest Listing (For Farmers) -->
+    <div id="createListingModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-kisan-200 p-6 sm:p-8 space-y-5 animate-in zoom-in-95">
+            <div class="flex justify-between items-start border-b border-gray-100 pb-3">
+                <div>
+                    <h3 class="text-lg font-extrabold text-slate-900" data-i18n="modal_sell_title">🌾 List Your Crop for Direct Buyers</h3>
+                    <p class="text-xs text-slate-500">Sell straight to consumers & wholesalers at zero brokerage commission</p>
+                </div>
+                <button onclick="closeCreateListingModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-slate-500">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <form id="createListingForm" onsubmit="submitCreateListing(event)" class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Crop Name (फसल का नाम) *</label>
+                    <input type="text" id="new_crop_name" required placeholder="e.g. Sharbati Wheat, Basmati Rice, Nashik Onion" class="w-full p-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Category (श्रेणी) *</label>
+                        <select id="new_category" class="w-full p-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none bg-white">
+                            <option value="Grains">Grains & Cereals (अनाज)</option>
+                            <option value="Vegetables">Vegetables (सब्जियां)</option>
+                            <option value="Fruits">Fruits & Orchards (फल)</option>
+                            <option value="Oilseeds">Oilseeds & Mustard (तिलहन)</option>
+                            <option value="Pulses">Pulses & Dal (दालें)</option>
+                            <option value="Organic Special">Organic / Honey (जैविक)</option>
+                            <option value="Spices">Spices (मसाले)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Crop Variety (किस्म)</label>
+                        <input type="text" id="new_variety" placeholder="e.g. Pusa 1121, Abhinav F1" class="w-full p-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Quantity (मात्रा) *</label>
+                        <input type="number" step="0.1" id="new_quantity" required placeholder="50" class="w-full p-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Unit (इकाई) *</label>
+                        <select id="new_unit" class="w-full p-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none bg-white">
+                            <option value="Quintal" selected>Quintal (क्विंटल)</option>
+                            <option value="kg">Kilogram (kg)</option>
+                            <option value="Ton">Metric Ton (टन)</option>
+                            <option value="Box">Crate / Box (पेटी)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Expected Price (₹) *</label>
+                        <input type="number" step="1" id="new_price_per_unit" required placeholder="2800" class="w-full p-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">State (राज्य) *</label>
+                        <select id="new_state" class="w-full p-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none bg-white">
+                            <option value="Uttar Pradesh" selected>Uttar Pradesh</option>
+                            <option value="Punjab">Punjab</option>
+                            <option value="Haryana">Haryana</option>
+                            <option value="Madhya Pradesh">Madhya Pradesh</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Rajasthan">Rajasthan</option>
+                            <option value="Gujarat">Gujarat</option>
+                            <option value="Bihar">Bihar</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">District / Tehsil *</label>
+                        <input type="text" id="new_district" placeholder="e.g. Varanasi, Ludhiana" required class="w-full p-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none">
+                    </div>
+                </div>
+
+                <label class="flex items-center gap-2 cursor-pointer bg-emerald-50 p-2.5 rounded-xl border border-emerald-200">
+                    <input type="checkbox" id="new_organic_certified" class="rounded text-kisan-600 focus:ring-kisan-500">
+                    <span class="font-bold text-emerald-900">🌿 100% Organic / Pesticide-Free Certified</span>
+                </label>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Crop Description & Harvest Details</label>
+                    <textarea id="new_description" rows="2" placeholder="Mention harvest freshness, packaging, and loading availability..." class="w-full p-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2 border-t border-gray-100">
+                    <button type="button" onclick="closeCreateListingModal()" class="px-4 py-2 rounded-xl bg-gray-100 text-slate-700 font-bold hover:bg-gray-200">Cancel</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-kisan-700 hover:bg-kisan-800 text-white font-bold shadow-md transition">Publish Listing</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Modal 3: Direct Buy / Negotiation Offer Modal (For Buyers) -->
+    <div id="buyOfferModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-kisan-200 p-6 sm:p-8 space-y-5 animate-in zoom-in-95">
+            <div class="flex justify-between items-start border-b border-gray-100 pb-3">
+                <div>
+                    <h3 class="text-lg font-extrabold text-slate-900">🛒 Buy Directly from Farmer</h3>
+                    <p class="text-xs text-slate-500" id="buyOfferCropTitle">Sharbati Golden Wheat</p>
+                </div>
+                <button onclick="closeBuyOfferModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-slate-500">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <!-- Farmer Trust Info Card -->
+            <div class="bg-kisan-50 p-3.5 rounded-2xl border border-kisan-200 flex items-center justify-between text-xs">
+                <div>
+                    <div class="font-bold text-slate-900 flex items-center gap-1.5" id="buyOfferFarmerName">
+                        <span>Ramesh Kumar Yadav</span>
+                        <span class="text-[10px] bg-emerald-200 text-emerald-900 font-bold px-1.5 py-0.2 rounded">✓ Verified Kisan</span>
+                    </div>
+                    <div class="text-slate-600 text-[11px]" id="buyOfferLocation">Varanasi, Uttar Pradesh</div>
+                </div>
+                <div class="text-right">
+                    <div class="font-bold text-kisan-800" id="buyOfferListedRate">₹2,750 / Quintal</div>
+                    <div class="text-[10px] text-emerald-700 font-semibold">Zero Commission</div>
+                </div>
+            </div>
+
+            <form id="buyOfferForm" onsubmit="submitBuyOffer(event)" class="space-y-4 text-xs">
+                <input type="hidden" id="offer_produce_id">
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Quantity Needed (<span id="offerUnitLabel">Quintal</span>) *</label>
+                        <input type="number" step="0.1" id="offer_quantity" required oninput="recalcOfferTotal()" placeholder="10" class="w-full p-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Offered Price (₹ / unit) *</label>
+                        <input type="number" step="1" id="offer_price" required oninput="recalcOfferTotal()" placeholder="2750" class="w-full p-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none">
+                    </div>
+                </div>
+
+                <!-- Total Amount Calculator -->
+                <div class="bg-gray-50 p-3.5 rounded-2xl border border-gray-200 flex justify-between items-center">
+                    <span class="font-bold text-slate-700">Estimated Total Deal Value:</span>
+                    <span class="text-lg font-extrabold text-kisan-800" id="offerTotalCalculated">₹0.00</span>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Delivery / Pickup Location</label>
+                    <input type="text" id="offer_location" placeholder="e.g. Farm gate pickup or Hauz Khas, Delhi" class="w-full p-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Message to Farmer (बातचीत / संदेश)</label>
+                    <textarea id="offer_message" rows="2" placeholder="Hi Ramesh ji, we want 20 quintals delivered next week..." class="w-full p-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none"></textarea>
+                </div>
+
+                <div class="flex flex-col gap-2 pt-2 border-t border-gray-100">
+                    <button type="submit" class="w-full py-3 rounded-xl bg-kisan-700 hover:bg-kisan-800 text-white font-bold shadow-md transition flex items-center justify-center gap-2">
+                        <i data-lucide="send" class="w-4 h-4"></i>
+                        <span>Submit Direct Offer to Farmer</span>
+                    </button>
+                    <a id="offerWhatsAppBtn" href="#" target="_blank" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-center shadow-sm flex items-center justify-center gap-2 transition">
+                        <span>💬 Direct WhatsApp Connect with Farmer</span>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Modal 4: Kisan AI Interactive Assistant -->
+    <div id="kisanAIModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-kisan-200 overflow-hidden animate-in zoom-in-95">
+            <div class="bg-gradient-to-r from-kisan-900 to-kisan-800 text-white p-4 sm:p-5 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-amber-400 text-slate-900 flex items-center justify-center text-xl font-bold shadow-md">
+                        🤖
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-white text-base">Kisan Mitra AI Assistant (किसान साथी)</h3>
+                        <p class="text-xs text-kisan-200">Ask about any scheme, subsidy, organic farming, or mandi prices</p>
+                    </div>
+                </div>
+                <button onclick="closeKisanAIModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <!-- Chat Messages Container -->
+            <div id="aiChatContainer" class="flex-grow p-4 space-y-3 overflow-y-auto max-h-96 text-xs bg-[#fbfdfb]">
+                <div class="flex gap-2.5 items-start">
+                    <div class="w-7 h-7 rounded-full bg-kisan-600 text-white flex items-center justify-center shrink-0 text-xs">🌾</div>
+                    <div class="bg-white p-3 rounded-2xl rounded-tl-none border border-kisan-200 shadow-sm max-w-[85%] text-slate-800 leading-relaxed">
+                        Namaste! I am your <strong>Kisan Mitra AI Assistant</strong>. Ask me anything about:
+                        <ul class="list-disc ml-4 mt-1.5 space-y-0.5 text-slate-700">
+                            <li>How to apply for <strong>PM-KUSUM 90% Solar Pump Subsidy</strong>?</li>
+                            <li>How to get <strong>₹50,000 PKVY Organic Farming Grant</strong>?</li>
+                            <li>How to sell my crop produce directly without middleman?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <form onsubmit="submitAIChat(event)" class="p-3 border-t border-gray-100 bg-white flex gap-2">
+                <input type="text" id="aiUserInput" placeholder="Ask in Hindi or English (e.g. सोलर पंप सब्सिडी कैसे मिलेगी?)..." class="flex-grow p-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none text-xs">
+                <button type="submit" class="px-4 py-2.5 rounded-xl bg-kisan-700 hover:bg-kisan-800 text-white font-bold text-xs shadow-md transition">
+                    Ask
+                </button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Modal 5: Register New Account Modal -->
+    <div id="registerModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-kisan-200 p-6 sm:p-8 space-y-4 animate-in zoom-in-95">
+            <div class="flex justify-between items-start border-b border-gray-100 pb-3">
+                <div>
+                    <h3 class="text-lg font-extrabold text-slate-900">Create KisanMitra Account</h3>
+                    <p class="text-xs text-slate-500">Join the direct agriculture revolution</p>
+                </div>
+                <button onclick="closeRegisterModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-slate-500">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <form id="registerForm" onsubmit="submitRegistration(event)" class="space-y-3.5 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Select Persona (भूमिका) *</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="flex items-center gap-2 p-2.5 rounded-xl border-2 border-kisan-500 bg-kisan-50 cursor-pointer font-bold text-kisan-900">
+                            <input type="radio" name="reg_role" value="farmer" checked class="text-kisan-600">
+                            <span>🚜 Farmer (किसान)</span>
+                        </label>
+                        <label class="flex items-center gap-2 p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer font-bold text-slate-700">
+                            <input type="radio" name="reg_role" value="buyer" class="text-kisan-600">
+                            <span>🛒 Buyer / Consumer</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Full Name (पूरा नाम) *</label>
+                    <input type="text" id="reg_name" required placeholder="e.g. Ramesh Kumar Yadav" class="w-full p-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Mobile Number (फोन नंबर) *</label>
+                    <input type="tel" id="reg_phone" required placeholder="e.g. +91 9876543210" class="w-full p-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Email or Username *</label>
+                    <input type="text" id="reg_email" required placeholder="e.g. kisan@example.com" class="w-full p-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">State (राज्य)</label>
+                        <input type="text" id="reg_state" placeholder="Uttar Pradesh" class="w-full p-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">District / City</label>
+                        <input type="text" id="reg_district" placeholder="Varanasi" class="w-full p-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-kisan-500 outline-none">
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-3 rounded-xl bg-kisan-700 hover:bg-kisan-800 text-white font-bold shadow-md transition">
+                        Complete Registration & Login
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Floating Kisan AI Assistant Launcher -->
+    <div class="fixed bottom-6 right-6 z-40">
+        <button onclick="openKisanAIAssistant()" class="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-kisan-800 hover:from-emerald-700 hover:to-kisan-900 text-white px-4 py-3 rounded-2xl shadow-xl shadow-kisan-900/30 border-2 border-kisan-300 transition transform hover:scale-105">
+            <span class="text-xl">🤖</span>
+            <div class="text-left hidden sm:block">
+                <div class="text-xs font-extrabold leading-none">Kisan AI</div>
+                <div class="text-[10px] text-emerald-200">Ask Scheme/Price</div>
+            </div>
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-kisan-950 text-kisan-200 py-10 border-t border-kisan-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8 text-xs">
+            <div class="space-y-3 md:col-span-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">🌾</span>
+                    <span class="text-xl font-bold text-white">KisanMitra (किसान मित्र)</span>
+                </div>
+                <p class="text-kisan-300 max-w-sm leading-relaxed">
+                    A dedicated national agricultural initiative empowering our farmer brothers with direct marketplace connectivity, eliminating middlemen, and delivering seamless government scheme discovery.
+                </p>
+                <div class="flex items-center gap-3 pt-1 text-kisan-400">
+                    <span>🇮🇳 Made for Indian Farmers</span>
+                    <span>•</span>
+                    <span>100% Free Public Platform</span>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <div class="font-bold text-white uppercase tracking-wider text-xs">Quick Access</div>
+                <ul class="space-y-1.5 text-kisan-300">
+                    <li><button onclick="switchTab('schemes')" class="hover:text-white">PM-Kisan & Schemes</button></li>
+                    <li><button onclick="switchTab('marketplace')" class="hover:text-white">Direct Crop Marketplace</button></li>
+                    <li><button onclick="switchTab('mandi')" class="hover:text-white">APMC Live Mandi Rates</button></li>
+                    <li><button onclick="switchTab('advisory')" class="hover:text-white">ICAR Weather & Crop Advisory</button></li>
+                </ul>
+            </div>
+
+            <div class="space-y-2">
+                <div class="font-bold text-white uppercase tracking-wider text-xs">Farmer Emergency Helplines</div>
+                <ul class="space-y-1.5 text-kisan-300">
+                    <li>Kisan Call Center: <strong class="text-white">1800-180-1551</strong></li>
+                    <li>PM-Kisan Helpline: <strong class="text-white">155261</strong></li>
+                    <li>Crop Insurance (PMFBY): <strong class="text-white">14447</strong></li>
+                    <li>Soil Health Card: <strong class="text-white">1800-115-526</strong></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <!-- App JavaScript -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
